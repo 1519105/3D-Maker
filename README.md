@@ -50,7 +50,7 @@ This project replaces the original control system entirely while keeping the rob
 
 ## Electronics Bay
 
-The bottom section of the frame houses all electronics: PSU, Lerdge Z board, and Raspberry Pi 3B — all neatly mounted and accessible.
+The bottom section of the frame houses all electronics: PSU, Lerdge Z board, and Raspberry Pi 4 — all neatly mounted and accessible.
 
 ![Electronics bay overview](Images/IMG_9367.jpg)
 ![Electronics detail](Images/IMG_9368.jpg)
@@ -72,9 +72,9 @@ The original print head was completely replaced with a custom-designed assembly 
 
 ### Fusion 360 — Print Head Assembly
 
-The full parametric model includes the carriage, extruder mount, fan ducts, probe holders, and belt tensioner:
+The all models includes the carriage, extruder mount, fan ducts, probe holders, and belt tensioner:
 
-![Print head CAD front](Images/Snímek_obrazovky_2026-04-09_151631.png)
+![Print head stl set](STLs/PrinterHead_set.stl)
 ![Print head CAD rear](Images/Snímek_obrazovky_2026-04-09_151637.png)
 ![Print head CAD bottom](Images/Snímek_obrazovky_2026-04-09_151726.png)
 ![Print head CAD exploded](Images/Snímek_obrazovky_2026-04-09_151839.png)
@@ -98,11 +98,12 @@ Side and rear panels were designed in Fusion 360 as a enclosure system with 3D p
 │   ├── printer.cfg          — Main Klipper configuration
 │   ├── macros.cfg           — Custom macros (PRINT_START, PRINT_END, etc.)
 │   └── moonraker.conf       — Moonraker / Mainsail config
-├── stl/
+├── STLs/
 │   └── bed_plate.stl        — Custom printed bed plate
-├── orca_slicer/
+│   └── PrinterHead_set.stl  — Custom printer head
+├── Orca/
 │   └── MP_3DMaker_0_4_nozzle.orca_printer  — Full OrcaSlicer printer bundle
-├── images/
+├── Images/
 │   ├── IMG_9366.jpg         — Printer overview
 │   ├── IMG_9367.jpg         — Electronics bay
 │   ├── IMG_9368.jpg         — Electronics detail
