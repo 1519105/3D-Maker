@@ -50,7 +50,7 @@ This project replaces the original control system entirely while keeping the rob
 
 ## Electronics Bay
 
-The bottom section of the frame houses all electronics: PSU, Lerdge Z board, and Raspberry Pi 4 — all neatly mounted and accessible.
+The left section of the frame houses all electronics: PSU, Lerdge Z board, and Raspberry Pi 4 — all separated from main print chamber, with separated ventilation.
 
 ![Electronics bay overview](Images/IMG_9367.jpg)
 ![Electronics detail](Images/IMG_9368.jpg)
