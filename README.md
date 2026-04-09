@@ -74,10 +74,7 @@ The original print head was completely replaced with a custom-designed assembly 
 
 The all models includes the carriage, extruder mount, fan ducts, probe holders, and belt tensioner:
 
-![Print head stl set](STLs/PrinterHead_set.stl)
-![Print head CAD rear](Images/Snímek_obrazovky_2026-04-09_151637.png)
-![Print head CAD bottom](Images/Snímek_obrazovky_2026-04-09_151726.png)
-![Print head CAD exploded](Images/Snímek_obrazovky_2026-04-09_151839.png)
+![Printer head stl set](STLs/PrinterHead_set.stl)
 
 ---
 
