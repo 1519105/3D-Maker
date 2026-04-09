@@ -55,6 +55,12 @@ The bottom section of the frame houses all electronics: PSU, Lerdge Z board, and
 ![Electronics bay overview](Images/IMG_9367.jpg)
 ![Electronics detail](Images/IMG_9368.jpg)
 
+### Fusion 360 — Print Head Assembly
+
+STL models includes electronics covers and holder:
+
+![Electronic bay cover stl set](STLs/MB_cover_set.stl)
+
 ---
 
 ## Print Head
@@ -72,18 +78,9 @@ The original print head was completely replaced with a custom-designed assembly 
 
 ### Fusion 360 — Print Head Assembly
 
-The all models includes the carriage, extruder mount, fan ducts, probe holders, and belt tensioner:
+STL models includes the carriage, extruder mount, fan ducts, probe holders, and belt holder:
 
 ![Printer head stl set](STLs/PrinterHead_set.stl)
-
----
-
-## Custom Printed Parts & Enclosure Covers
-
-Side and rear panels were designed in Fusion 360 as a enclosure system with 3D printed corner brackets, fan mounts, and vent covers.
-
-![Enclosure CAD front](Images/Snímek_obrazovky_2026-04-09_151301.png)
-![Enclosure CAD rear with fan mounts](Images/Snímek_obrazovky_2026-04-09_151306.png)
 
 ---
 
