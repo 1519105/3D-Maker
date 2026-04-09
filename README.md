@@ -27,11 +27,11 @@ This project replaces the original control system entirely while keeping the rob
 |---|---|---|
 | Control board | Proprietary | **Lerdge Z (STM32F407)** |
 | Firmware | Closed proprietary | **Klipper** |
-| Web interface | None | **Mainsail (Raspberry Pi 3B)** |
+| Web interface | None | **Mainsail (Raspberry Pi 4 2GB)** |
 | Extruder | Stock bowden | **HGX direct drive extruder** |
 | Bed leveling | Manual only | **BLTouch v3.4** |
 | Probe (alt.) | None | **Klicky Probe v2** |
-| Belts | Stock | **Gates belts** |
+| Belts | Stock | **Stock** |
 | Enclosure | Partial | **Full plexiglass panels** |
 | Lighting | None | **LED strip** |
 | Cable management | Hard cables | **Flexible silicone cables** |
