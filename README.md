@@ -161,12 +161,15 @@ A complete **OrcaSlicer printer bundle** (`.orca_printer`) is included with prin
 
 - ✅ Automatic mesh bed leveling (BLTouch)
 - ✅ Web interface via Mainsail
+- ✅ Web camera
 - ✅ Input shaper / resonance compensation
 - ✅ Exclude objects mid-print
 - ✅ Pressure advance tuning
 - ✅ Custom `PRINT_START` / `PRINT_END` macros
 - ✅ Filament runout sensor support
 - ✅ Real-time config editing without reflashing
+- ✅ Z-tilt screw function
+- ✅ Emergency PSU shutdown
 
 ---
 
