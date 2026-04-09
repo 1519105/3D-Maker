@@ -172,14 +172,14 @@ A complete **OrcaSlicer printer bundle** (`.orca_printer`) is included with prin
 
 ## Control Board — Lerdge Z
 
-The Lerdge Z board uses an **STM32F407** MCU. Klipper firmware must be compiled with the following settings:
+The Lerdge Z board uses an **STM32F407** MCU. Klipper firmware must be compiled with the following settings and then "crypted" with provided Lerdge FW tool or python script:
 
 - Micro-controller: **STM32F407**
 - Bootloader offset: **32KiB**
 - Clock reference: **25 MHz crystal**
 - Communication: **UART on PA9/PA10**
 
-Flash via original FW with attached display.
+Flash via original firmware way with attached display.
 
 ---
 
@@ -188,4 +188,4 @@ Flash via original FW with attached display.
 - The original printer frame, rods, and leadscrews were reused
 - The Raspberry Pi 4 runs Klipper host + Moonraker + Mainsail
 - All custom structural parts were designed in **Autodesk Fusion 360**
-- STL files are print-ready for 0.2mm layer height, 3 perimeters, 40% infill
+- STL files are print-ready for 0.2mm layer height, 3 perimeters, 40% infill, I choose PCCF
