@@ -1,0 +1,51 @@
+V4.3.4
+Add hardware driver for Z motherboard
+
+V4.3.5
+1. Independently optimize the EX axis function to support the Lerdge-Z motherboard
+2. Improve the expansion interface driver of the Lerdge-Z motherboard
+
+V4.3.6
+1. Adjust the corresponding relationship between the automatic leveling points and the leveling algorithm.
+       Set the leveling point to 0, the system disables the automatic leveling function
+       Set the number of leveling points to 1, and the system uses the plane equation algorithm to level with three-point sampling
+       Set the number of leveling points to 2, the system adopts bilinear algorithm, leveling through four-point sampling
+       Set the number of leveling points n (2<n<32), the system adopts grid bilinear algorithm, and leveling through n*n points sampling
+2. Adjust the material detection logic to reduce the suspension problem caused by misreporting that the consumables are exhausted.
+
+V4.3.6.1
+1. Remove the check of the effective number of detection points, and solve the problem that some users feedback that they cannot be detected normally after the automatic leveling exceeds 3 points.
+
+V4.4.1
+1. The internal storage space is re-planned. After updating the firmware, you must restore the factory settings and reset and level them.
+2. Rewrite the material detection filter algorithm to reduce the false alarm rate of material detection (currently in the test version)
+3. Increase the mileage statistics of each axis, which can be viewed in the system information (currently in the test version)
+4. Change the high-level duration of the pulse signal of each axis from the original fixed 3us to a dynamic change with the pulse frequency, so as to be better compatible with more drives
+5. Reduce the pulse upper limit frequency of each axis, from the original 180Khz to 150Khz (mainly a compromise made to be compatible with the dynamic adjustment of the pulse time)
+6. Add the function of automatically raising the Z axis after exiting the leveling interface to prevent the possibility of directly heating the print head after leveling and causing the printing platform to be scalded
+7. Add the homing icon indication function on the main interface
+8. Optimize the tool setting accuracy during pause and unexpected power failure, after saving the printing progress, when continuing to print
+9. Added support for M73 command to display remaining time (for prusaslicer slicing software)
+10. Fix the bug that the temperature is reset to zero when resuming printing after the temperature error is paused
+11. Repair the recovery error bug that occurs when the refueling action is not completed and clicks to continue printing when the refueling is suspended
+12. Fix some display errors
+
+V4.4.2
+1. Add the thumbnail function that supports PrusaSlicer slicing software
+2. Solve the problem of memory read crash or error reported by some users. The current solution direction may be memory overflow.
+3. Add the function of fault indicator light
+
+V4.4.3
+1. Set the extrusion speed before withdrawing to a fixed 6mm/s to solve the problem that the extruder is jammed when the material is too fast before withdrawing in the old version.
+2. Modify the leveling icon on the leveling interface. When the number of leveling points is set to 0, it will be displayed in light gray, indicating that the icon is invalid. Increase the display of the current leveling points in the upper left corner
+
+V4.5.0
+1. Added the expansion code of the hot head for the expansion interface of the Z motherboard.
+2. When the adjustment material is exhausted and no one is handling it, only the heating function of the print head is turned off, and the temperature of the hot bed is not turned off, so as to prevent the printed model from falling off the printing platform due to the temperature drop of the platform.
+3. Fixed the timer index error during the initialization of the E-axis timer (this is the reason why the previous version had a probability of crash after linear extrusion was enabled).
+4. Adjust the action of unloading consumables: when the temperature of the print head is greater than 160°C to unload the consumables, the extruder will first extrude a little consumables at a speed of 6mm/s, and then unload the consumables.
+5. Adjusted the function position of the exit path planning mark to avoid the function abnormality caused by repeated nesting of functions under certain extreme conditions.
+6. Improve the response speed of LCD screen operation.
+7. When resuming printing, first extrude a little consumable to fill the inside of the entire print head with the material, so as to ensure that the interface of the print resumes to be perfect.
+8. Rewritten the algorithm and execution method of linear extrusion to prepare for the subsequent addition of curve acceleration and deceleration.
+9. Adjusted the method of M0 M25 execution pause to avoid the bug of infinite pause and recovery cycle when the Gcode file contains M0 M25.
