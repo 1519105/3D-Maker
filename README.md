@@ -186,6 +186,83 @@ Flash via original firmware way with attached display.
 
 ---
 
+## KlipperScreen on Android tablet and xserver
+
+```bash
+set -e
+
+# 1) Závislosti
+sudo apt update
+sudo apt install -y adb x11-xserver-utils
+
+# 2) Přepiš launch skript vlastní verzí (ADB forward + XSDL detekce portu)
+cat > "$HOME/KlipperScreen/launch_klipperscreen.sh" << 'LAUNCH_EOF'
+#!/bin/bash
+echo "Čekám na ADB zařízení..."
+timeout=0
+while ! adb devices | grep -q "device$" && [ $timeout -lt 30 ]; do
+    sleep 1
+    timeout=$((timeout+1))
+done
+if ! adb devices | grep -q "device$"; then
+    echo "ADB nenalezeno, konec."
+    exit 1
+fi
+adb shell am start -n x.org.server/.MainActivity
+sleep 3
+XSDL_PORT=""
+timeout=0
+echo "Hledám XSDL port..."
+while [ -z "$XSDL_PORT" ] && [ $timeout -lt 20 ]; do
+    for port in 6000 6001 6002 6003 6004 6005 6006 6007 6008 6009 6010; do
+        echo "  Zkouším port $port..."
+        adb forward tcp:6100 tcp:$port 2>/dev/null
+        if timeout 2 bash -c "DISPLAY=:100 xset -q > /dev/null 2>&1"; then
+            XSDL_PORT=$port
+            echo "Nalezen port: $XSDL_PORT"
+            break
+        fi
+    done
+    timeout=$((timeout+1))
+    sleep 1
+done
+if [ -z "$XSDL_PORT" ]; then
+    echo "Port nenalezen, konec."
+    exit 1
+fi
+echo "Spouštím KlipperScreen na portu $XSDL_PORT"
+DISPLAY=:100 "$HOME/.KlipperScreen-env/bin/python" \
+    "$HOME/KlipperScreen/screen.py"
+LAUNCH_EOF
+chmod +x "$HOME/KlipperScreen/launch_klipperscreen.sh"
+
+# 3) Přepiš systemd unit (User a cesty se vyplní z aktuálního uživatele)
+sudo tee /etc/systemd/system/KlipperScreen.service > /dev/null << SERVICE_EOF
+[Unit]
+Description=KlipperScreen
+StartLimitIntervalSec=0
+After=moonraker.service
+After=dbus.socket systemd-logind.service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+User=$USER
+WorkingDirectory=$HOME/KlipperScreen
+ExecStart=$HOME/KlipperScreen/launch_klipperscreen.sh
+
+[Install]
+WantedBy=multi-user.target
+SERVICE_EOF
+
+# 4) Aktivuj
+sudo systemctl daemon-reload
+sudo systemctl enable KlipperScreen.service
+sudo systemctl restart KlipperScreen.service
+sudo systemctl status KlipperScreen.service --no-pager
+```
+
 ## Notes
 
 - The original printer frame, rods, and leadscrews were reused
