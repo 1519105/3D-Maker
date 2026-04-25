@@ -188,6 +188,8 @@ Flash via original firmware way with attached display.
 
 ## KlipperScreen on Android tablet and xserver
 
+### Instalation of launch script a setting up system service
+
 ```bash
 set -e
 
@@ -262,6 +264,125 @@ sudo systemctl enable KlipperScreen.service
 sudo systemctl restart KlipperScreen.service
 sudo systemctl status KlipperScreen.service --no-pager
 ```
+### Authorization of Android device
+
+adb devices vrací buď prázdno nebo unauthorized — proto skript pořád čeká. Pojďme to diagnostikovat:
+
+```bash
+# 1) zastav službu aby ti nepřekážela při testování
+sudo systemctl stop KlipperScreen.service
+
+# 2) ručně otestuj ADB
+adb devices
+```
+
+Co očekávat a jak reagovat:
+a) Prázdný výpis (List of devices attached a nic dál):
+
+Tablet vůbec není vidět přes USB. Zkontroluj kabel (musí být datový, ne jen napájecí), zkus jiný USB port na RPi, případně restartuj ADB:
+
+```bash
+adb kill-server
+  adb start-server
+  adb devices
+  lsusb   # vidíš tablet v seznamu USB zařízení?
+```
+
+b) unauthorized vedle ID zařízení:
+
+Na tabletu se má objevit dialog "Allow USB debugging from this computer?" — potvrď ho a zaškrtni "Always allow". Pokud se dialog neobjeví, zkus na tabletu v Developer Options:
+
+vypni a zapni USB debugging
+klikni na "Revoke USB debugging authorizations" (smaže staré klíče z původního RPi)
+znovu připoj kabel → dialog by se měl objevit
+
+
+
+c) device se objeví ✓:
+
+Pak je ADB OK a problém byl jen v autorizaci. Spusť ručně skript a uvidíš celý průběh včetně XSDL detekce:
+
+```bash
+/home/m/KlipperScreen/launch_klipperscreen.sh
+```
+
+Důležité: RPi a tablet mají teď nový pár ADB klíčů (původní byly na starém RPi v ~/.android/). Tablet tě musí znovu autorizovat, jinak jedeš pořád dokola na čekání.
+
+```bash
+* daemon not running; starting now at tcp:5037
+* daemon started successfully
+List of devices attached
+0123456789ABCDEF        no permissions (missing udev rules? user is in the plugdev group); see [http://developer.android.com/tools/device.html]
+```
+
+Klasika — chybí udev pravidla pro USB tablet. Tohle se stalo protože nový systém nemá nastaveny ty samé permissions jako starý. Oprava:
+
+```bash
+# 1) Doinstaluj balík s udev pravidly pro Android zařízení
+sudo apt install -y android-sdk-platform-tools-common
+
+# 2) Ujisti se že jsi v plugdev (asi už jsi, ale pro jistotu)
+sudo usermod -aG plugdev $USER
+
+# 3) Reload udev pravidel a restart ADB
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+adb kill-server
+adb start-server
+
+# 4) Otestuj
+adb devices
+```
+
+Pokud i po tomhle zůstane no permissions, znamená to že vendor ID tvého tabletu není v default pravidlech (/lib/udev/rules.d/51-android.rules). Zjisti vendor ID:
+
+```bash
+lsusb
+```
+
+Najdi v seznamu tablet (něco jako Bus 001 Device 005: ID 18d1:4ee7 Google Inc.) a pošli sem ten řádek. Pak ti vyrobím vlastní udev pravidlo.
+Pozn.: Po usermod -aG plugdev se členství projeví až po novém přihlášení — ale na samotnou službu to nemá vliv (ta běží jako User=m a systemd respektuje supplementary groups z /etc/group při startu). Takže až udev pravidla povolí přístup, můžeš službu rovnou nahodit.
+
+```bash
+lsusb
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 002: ID 2109:3431 VIA Labs, Inc. Hub
+Bus 001 Device 003: ID 0bb4:0c03 HTC (High Tech Computer Corp.) Android Phone [Fairphone First Edition (FP1)]
+Bus 001 Device 004: ID 1a86:7523 QinHeng Electronics CH340 serial converter
+Bus 001 Device 005: ID 1e45:8022 Suyin HD Camera
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+```
+
+Tablet vidím — je to ten HTC 0bb4:0c03 (vendor ID 0bb4 patří HTC). Vytvoříme pro něj vlastní udev pravidlo:
+
+```bash
+# Vytvoř udev pravidlo pro HTC vendor ID 0bb4
+sudo tee /etc/udev/rules.d/51-android-htc.rules > /dev/null << 'EOF'
+SUBSYSTEM=="usb", ATTR{idVendor}=="0bb4", MODE="0666", GROUP="plugdev"
+EOF
+
+# Reload pravidel a aplikace na již připojené zařízení
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+
+# Restart ADB
+adb kill-server
+adb start-server
+
+# Test
+adb devices
+```
+
+Měl bys vidět 0123456789ABCDEF device (bez no permissions).
+Pak by tablet měl ukázat dialog na autorizaci — potvrď, dej "Always allow", a:
+
+```bash
+adb devices       # mělo by být 'device', ne 'unauthorized'
+sudo systemctl start KlipperScreen.service
+sudo systemctl status KlipperScreen.service --no-pager
+```
+
+Pokud bude pořád no permissions, je možné že je třeba fyzicky odpojit a znovu připojit USB kabel aby se nová pravidla aplikovala (udev pravidla se na MODE/GROUP aplikují při enumeraci zařízení, ne retroaktivně, i přes udevadm trigger).
 
 ## Notes
 
